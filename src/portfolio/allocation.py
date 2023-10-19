@@ -13,6 +13,20 @@ class AllocationStyle(Enum):
     UNKNOWN = 4
 
 
+class GeographicalRegion(Enum):
+    NORTH_AMERICA = "North America"
+    EMEA = "Europe, Middle East, and Africa"
+    LATAM = "Latin America"
+    APAC = "Asia-Pacific"
+    GLOBAL = "Global"
+
+
+class EconomicStatus(Enum):
+    DEVELOPED = "Developed Markets"
+    EMERGING = "Emerging Markets"
+    FRONTIER = "Frontier Markets"
+
+
 class MarketCap(Enum):
     LARGE = 1
     MID = 2
@@ -29,6 +43,20 @@ class SecurityAllocation:
         AllocationStyle.GROWTH: 0,
         AllocationStyle.VALUE: 0,
         AllocationStyle.UNKNOWN: 100,
+    }
+
+    economic_status = {
+        EconomicStatus.DEVELOPED: 100,
+        EconomicStatus.EMERGING: 0,
+        EconomicStatus.FRONTIER: 0,
+    }
+
+    geographic_region = {
+        GeographicalRegion.NORTH_AMERICA: 0,
+        GeographicalRegion.EMEA: 0,
+        GeographicalRegion.LATAM: 0,
+        GeographicalRegion.APAC: 0,
+        GeographicalRegion.GLOBAL: 100,
     }
 
     def set_allocation_style(self, allocation_style: AllocationStyle):
@@ -53,8 +81,73 @@ class SecurityAllocation:
             RegionType.INTERNATIONAL: international,
         }
 
+    def set_economic_status(self, economic_status: EconomicStatus):
+        if economic_status not in EconomicStatus:
+            raise ValueError('Invalid economic status')
+        if economic_status == EconomicStatus.DEVELOPED:
+            self.economic_status = {
+                EconomicStatus.DEVELOPED: 100,
+                EconomicStatus.EMERGING: 0,
+                EconomicStatus.FRONTIER: 0,
+            }
+        elif economic_status == EconomicStatus.EMERGING:
+            self.economic_status = {
+                EconomicStatus.DEVELOPED: 0,
+                EconomicStatus.EMERGING: 100,
+                EconomicStatus.FRONTIER: 0,
+            }
+        elif economic_status == EconomicStatus.FRONTIER:
+            self.economic_status = {
+                EconomicStatus.DEVELOPED: 0,
+                EconomicStatus.EMERGING: 0,
+                EconomicStatus.FRONTIER: 100,
+            }
+        else:
+            raise ValueError('Invalid economic status')
+
+    def set_economic_status_values(self, developed: int = 0, emerging: int = 0, frontier: int = 0):
+        self.economic_status = {
+            EconomicStatus.DEVELOPED: developed,
+            EconomicStatus.EMERGING: emerging,
+            EconomicStatus.FRONTIER: frontier,
+        }
+
+    def set_geographic_region(self, geographic_region: GeographicalRegion):
+        if geographic_region not in GeographicalRegion:
+            raise ValueError('Invalid geographic region')
+        if geographic_region == GeographicalRegion.GLOBAL:
+            self.geographic_region = {
+                GeographicalRegion.NORTH_AMERICA: 0,
+                GeographicalRegion.EMEA: 0,
+                GeographicalRegion.LATAM: 0,
+                GeographicalRegion.APAC: 0,
+                GeographicalRegion.GLOBAL: 100,
+            }
+        else:
+            self.geographic_region = {
+                GeographicalRegion.NORTH_AMERICA: 100 if geographic_region == GeographicalRegion.NORTH_AMERICA else 0,
+                GeographicalRegion.EMEA: 100 if geographic_region == GeographicalRegion.EMEA else 0,
+                GeographicalRegion.LATAM: 100 if geographic_region == GeographicalRegion.LATAM else 0,
+                GeographicalRegion.APAC: 100 if geographic_region == GeographicalRegion.APAC else 0,
+                GeographicalRegion.GLOBAL: 0,
+            }
+
+    def set_geographic_region_values(self, north_america: int = 0, emea: int = 0, latam: int = 0, apac: int = 0,
+                                     global_: int = 0):
+        self.geographic_region = {
+            GeographicalRegion.NORTH_AMERICA: north_america,
+            GeographicalRegion.EMEA: emea,
+            GeographicalRegion.LATAM: latam,
+            GeographicalRegion.APAC: apac,
+            GeographicalRegion.GLOBAL: global_,
+        }
+
     def validate(self):
         if sum(self.us_international.values()) != 100:
             raise ValueError('US and International must sum to 100')
         if sum(self.allocation_style.values()) != 100:
             raise ValueError('Allocation style must sum to 100.')
+        if sum(self.economic_status.values()) != 100:
+            raise ValueError('Economic status must sum to 100.')
+        if sum(self.geographic_region.values()) != 100:
+            raise ValueError('Geographic region must sum to 100.')
