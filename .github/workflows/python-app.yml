@@ -18,10 +18,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - uses: actions/checkout@v4
     - name: Setup PDM
-      uses: pdm-project/setup-pdm@v3.3
+    - uses: pdm-project/setup-pdm@v3.3
+      with:
+        python-version: 3.11
+        cache: true
+      
     - name: Install dependencies
-      run: pdm install
+      run: |
+        pdm venv create --with-pip --force $PYTHON
+        pdm install
     - name: Lint with ruff
       run: |
         ruff .
