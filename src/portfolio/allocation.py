@@ -13,6 +13,15 @@ class AllocationStyle(Enum):
     UNKNOWN = 4
 
 
+class FundAssetType(Enum):
+    STOCK = 1
+    BOND = 2
+    CASH = 3
+    REAL_ESTATE = 4
+    COMMODITY = 5
+    OTHER = 6
+
+
 class GeographicalRegion(Enum):
     NORTH_AMERICA = "North America"
     EMEA = "Europe, Middle East, and Africa"
@@ -140,6 +149,23 @@ class SecurityAllocation:
             GeographicalRegion.LATAM: latam,
             GeographicalRegion.APAC: apac,
             GeographicalRegion.GLOBAL: global_,
+        }
+
+    def set_fund_asset_types(self,
+                             stock: int = 0,
+                             bond: int = 0,
+                             cash: int = 0,
+                             real_estate: int = 0,
+                             commodity: int = 0,
+                             other: int = 0
+                             ):
+        self.fund_asset_types = {
+            FundAssetType.STOCK: stock,
+            FundAssetType.BOND: bond,
+            FundAssetType.CASH: cash,
+            FundAssetType.REAL_ESTATE: real_estate,
+            FundAssetType.COMMODITY: commodity,
+            FundAssetType.OTHER: other,
         }
 
     def validate(self):
